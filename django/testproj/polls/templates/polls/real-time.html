@@ -1,0 +1,55 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+</head>
+<body>
+<script type='text/javascript' src="{% static 'assets/js/jquery-18.js' %}"></script>
+    <script type="text/javascript">
+        $(document).ready(
+            function() {
+                setInterval(function() {
+                    $.ajax({
+                        url : "/polls/get-real-time",
+                        type : "GET",
+                        dataType: "json",
+                        data : {
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                            },
+                        success : function(json) {
+                            $('#localtime').text( 'Current time: ' + json.server_response);
+                            $('#remotetime').text( 'Current time: ' + json.server_response_1);
+                            //alert(json.server_response);
+                        },
+                        error : function(xhr,errmsg,err) {
+                            alert(xhr.status + ": " + xhr.responseText);
+                        }
+                    });
+
+                    //$.getJSON('/polls/get-real-time', function(data) {
+			            //alert(data); //uncomment this for debug
+			            //alert (data.item); //further debug
+                    //$('#localtime').text('I am getting refreshed every 5 seconds..! Random Number ==> ' + randomnumber);
+                    //});
+
+                }, 1000);
+            }
+        );
+
+    </script>
+<h1>This is the local server time</h1>
+<div id="localtime">
+<!-- Load Server Time -->
+{% csrf_token %}
+</div>
+<br>
+<h1>This is the remote NTP server time</h1>
+<div id="remotetime">
+<!-- Load Server Time -->
+{% csrf_token %}
+</div>
+</body>
+</html>

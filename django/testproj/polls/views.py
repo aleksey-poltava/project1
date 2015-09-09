@@ -1,7 +1,17 @@
 from django.shortcuts import get_object_or_404, render
-from django.http import HttpResponseRedirect
+# from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.views import generic
+
+from django.http import *
+from django.shortcuts import render_to_response
+from django.template import RequestContext
+import json
+import socket
+
+from socket import AF_INET, SOCK_DGRAM
+import sys
+import struct, time
 
 from .models import Choice, Question
 
@@ -13,7 +23,6 @@ class IndexView(generic.ListView):
     def get_queryset(self):
         """Return the last five published questions."""
         return Question.objects.order_by('-pub_date')[:5]
-
 
 class DetailView(generic.DetailView):
     model = Question
@@ -40,3 +49,48 @@ def vote(request, question_id):
         # with POST data. This prevents data from being posted twice if a
         # user hits the Back button.
         return HttpResponseRedirect(reverse('polls:results', args=(p.id,)))
+
+def main(request):
+    return render_to_response('polls/ajaxexample.html', context_instance=RequestContext(request))
+
+def ajax(request):
+    if request.POST.has_key('client_response'):
+        x = request.POST['client_response']
+        y = socket.gethostbyname(x)
+        response_dict = {}
+        response_dict.update({'server_response': y})
+        return HttpResponse(json.dumps(response_dict), content_type = 'application/javascript')
+    else:
+        return render_to_response('polls/ajaxexample.html', context_instance = RequestContext(request))
+
+def realtime(request):
+    return render_to_response('polls/real-time.html', context_instance=RequestContext(request))
+
+def getrealtime(request):
+    localtime = str(time.strftime("%H:%M:%S"))
+    ntptime = str(getNTPTime())
+    response_dict = {}
+    response_dict.update({'server_response': localtime})
+    response_dict.update({'server_response_1': ntptime})
+    return HttpResponse(json.dumps(response_dict), content_type = 'application/javascript')
+
+def getNTPTime(host = "pool.ntp.org"):
+        port = 123
+        buf = 1024
+        address = (host,port)
+        msg = '\x1b' + 47 * '\0'
+
+        # reference time (in seconds since 1900-01-01 00:00:00)
+        TIME1970 = 2208988800L # 1970-01-01 00:00:00
+
+        # connect to server
+        client = socket.socket( AF_INET, SOCK_DGRAM)
+        client.sendto(msg, address)
+        msg, address = client.recvfrom( buf )
+
+        t = struct.unpack( "!12I", msg )[10]
+        t -= TIME1970
+        return time.ctime(t).replace("  "," ")
+
+# http://www.uswitch.com/mobiles/mobile_tracker/ - mobile phone selling stat
+# the most visited places of interest, cities
