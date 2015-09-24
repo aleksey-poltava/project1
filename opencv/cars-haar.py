@@ -12,7 +12,7 @@ class MotionDetectorContour:
 
     def run(self):
         # Capture first frame to get size
-        face_cascade = cv.CascadeClassifier('cars.xml')
+        face_cascade = cv.CascadeClassifier('cars-cascade-11-08-2015.xml')
         stream = urllib.urlopen('http://213.221.150.136/mjpg/video.mjpg')
         count = 0
         height = 0

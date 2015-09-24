@@ -17,7 +17,7 @@ class MotionDetectorContour:
 
         # Define the codec and create VideoWriter object
         fourcc = cv.cv.CV_FOURCC(*'XVID')
-        out = cv.VideoWriter('road-08-08-2015.avi', fourcc, 10.0, (640,480))  # uncomment this to write video
+        out = cv.VideoWriter('road-16-09-2015.avi', fourcc, 10.0, (640,480))  # uncomment this to write video
 
         count = 0
         height = 0

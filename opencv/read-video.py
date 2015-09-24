@@ -1,11 +1,11 @@
 import numpy as np
 import cv2
 
-cap = cv2.VideoCapture("drop.avi")
+cap = cv2.VideoCapture("road-08-08-2015.avi")
 
 # Define the codec and create VideoWriter object
 fourcc = cv2.cv.CV_FOURCC(*'XVID')
-out = cv2.VideoWriter('output.avi', fourcc, 30.0, (256, 240))
+out = cv2.VideoWriter('output.avi', fourcc, 30.0, (640, 480))
 
 while (cap.isOpened()):
     ret, frame = cap.read()

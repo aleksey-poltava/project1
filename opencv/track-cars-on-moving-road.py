@@ -4,10 +4,13 @@ import time
 face_cascade = cv2.CascadeClassifier('cars-cascade-11-08-2015.xml')
 vc = cv2.VideoCapture('road-08-08-2015.avi')
 
+print vc.isOpened()
+
 if vc.isOpened():
     rval , frame = vc.read()
 else:
     rval = False
+    print 'error_vc_opend'
 
 # init params
 ncars = 0

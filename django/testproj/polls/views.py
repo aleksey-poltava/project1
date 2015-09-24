@@ -13,16 +13,26 @@ from socket import AF_INET, SOCK_DGRAM
 import sys
 import struct, time
 
-from .models import Choice, Question
+from .models import Choice, Question, roadcar
+
+# REST example
+
+from rest_framework import viewsets
+from .serializers import RoadcarSerializer
 
 # Create your views here.
-class IndexView(generic.ListView):
-    template_name = 'polls/index.html'
-    context_object_name = 'latest_question_list'
+# class IndexView(generic.ListView):
+#    model = roadcar
+#    template_name = 'polls/index.html'
 
-    def get_queryset(self):
-        """Return the last five published questions."""
-        return Question.objects.order_by('-pub_date')[:5]
+    # context_object_name = 'latest_question_list'
+
+#    def get_queryset(self):
+#        """Count number of records in cars table. It is equal to cars number that passes road"""
+#        car_counter = roadcar.objects.count()
+#        context = {'car_counter': car_counter}
+#        return render(self, 'polls/index.html', context)
+        # return Question.objects.order_by('-pub_date')[:5]
 
 class DetailView(generic.DetailView):
     model = Question
@@ -94,3 +104,17 @@ def getNTPTime(host = "pool.ntp.org"):
 
 # http://www.uswitch.com/mobiles/mobile_tracker/ - mobile phone selling stat
 # the most visited places of interest, cities
+
+def index(request):
+    car_counter = roadcar.objects.count()
+    context = {'car_counter': car_counter}
+    return render(request, 'polls/index.html', context)
+
+# serializer REST example
+
+class RoadcarViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = roadcar.objects.all()
+    serializer_class = RoadcarSerializer
